@@ -1,5 +1,5 @@
-#!/home/kaal/Documents/Scripts/MeiBot/MeiBot-main/venv/bin/python
-# -*- coding: utf-8 -*-
+#!/home/shusui/Documents/scripts/DiscordBot/MeiBot/venv/bin/python
+#  -*- coding: utf-8 -*-
 import re
 import sys
 from dotenv.__main__ import cli

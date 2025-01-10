@@ -98,8 +98,15 @@ Location of the main configuration file; either the path to the config
 or its containing directory (\[dq]-\[dq] for stdin).
 Can be used multiple times and inside other configuration files
 .TP
+--plugin-dirs \f[I]PATH\f[R]
+Path to an additional directory to search for plugins.
+This option can be used multiple times to add multiple directories.
+Note that this currently only works for extractor plugins; postprocessor
+plugins can only be loaded from the default plugin directories
+.TP
 --flat-playlist
-Do not extract the videos of a playlist, only list them
+Do not extract a playlist\[aq]s URL result entries; some entry metadata
+may be missing and downloading may be bypassed
 .TP
 --no-flat-playlist
 Fully extract the videos of a playlist (default)
@@ -232,11 +239,11 @@ day two weeks ago
 .TP
 --datebefore \f[I]DATE\f[R]
 Download only videos uploaded on or before this date.
-The date formats accepted is the same as --date
+The date formats accepted are the same as --date
 .TP
 --dateafter \f[I]DATE\f[R]
 Download only videos uploaded on or after this date.
-The date formats accepted is the same as --date
+The date formats accepted are the same as --date
 .TP
 --match-filters \f[I]FILTER\f[R]
 Generic video filter.
@@ -288,7 +295,7 @@ Abort after downloading NUMBER files
 .TP
 --break-on-existing
 Stop the download process when encountering a file that is in the
-archive
+archive supplied with the --download-archive option
 .TP
 --no-break-on-existing
 Do not stop the download process when encountering a file that is in the
@@ -466,7 +473,7 @@ Allow Unicode characters, \[dq]&\[dq] and spaces in filenames (default)
 Force filenames to be Windows-compatible
 .TP
 --no-windows-filenames
-Make filenames Windows-compatible only if using Windows (default)
+Sanitize filenames only minimally
 .TP
 --trim-filenames \f[I]LENGTH\f[R]
 Limit the filename length (excluding extension) to the specified number
@@ -648,7 +655,7 @@ This option can be used multiple times
 .TP
 --print-to-file \f[I][WHEN:]TEMPLATE FILE\f[R]
 Append given template to the file.
-The values of WHEN and TEMPLATE are same as that of --print.
+The values of WHEN and TEMPLATE are the same as that of --print.
 FILE uses the same syntax as the output template.
 This option can be used multiple times
 .TP
@@ -658,7 +665,7 @@ Simulate unless --no-simulate is used.
 See \[dq]OUTPUT TEMPLATE\[dq] for a description of available keys
 .TP
 -J, --dump-single-json
-Quiet, but print JSON information for each url or infojson passed.
+Quiet, but print JSON information for each URL or infojson passed.
 Simulate unless --no-simulate is used.
 If the URL refers to a playlist, the whole playlist information is
 dumped in a single line
@@ -774,7 +781,7 @@ Allow multiple audio streams to be merged into a single file
 Only one audio stream is downloaded for each output file (default)
 .TP
 --prefer-free-formats
-Prefer video formats with free containers over non-free ones of same
+Prefer video formats with free containers over non-free ones of the same
 quality.
 Use with \[dq]-S ext\[dq] to strictly prefer free containers
 irrespective of quality
@@ -823,16 +830,18 @@ List available subtitles of each video.
 Simulate unless --no-simulate is used
 .TP
 --sub-format \f[I]FORMAT\f[R]
-Subtitle format; accepts formats preference, e.g.
+Subtitle format; accepts formats preference separated by \[dq]/\[dq],
+e.g.
 \[dq]srt\[dq] or \[dq]ass/srt/best\[dq]
 .TP
 --sub-langs \f[I]LANGS\f[R]
 Languages of the subtitles to download (can be regex) or \[dq]all\[dq]
 separated by commas, e.g.
---sub-langs \[dq]en.*,ja\[dq].
+--sub-langs \[dq]en.*,ja\[dq] (where \[dq]en.*\[dq] is a regex pattern
+that matches \[dq]en\[dq] followed by 0 or more of any character).
 You can prefix the language code with a \[dq]-\[dq] to exclude it from
 the requested languages, e.g.
---sub-langs all,-live_chat.
+--sub- langs all,-live_chat.
 Use --list-subs for a list of available language tags
 .SS Authentication Options:
 .TP
@@ -904,7 +913,7 @@ bitrate like 128K (default 5)
 Remux the video into another container if necessary (currently
 supported: avi, flv, gif, mkv, mov, mp4, webm, aac, aiff, alac, flac,
 m4a, mka, mp3, ogg, opus, vorbis, wav).
-If target container does not support the video/audio codec, remuxing
+If the target container does not support the video/audio codec, remuxing
 will fail.
 You can specify multiple rules; e.g.
 \[dq]aac>m4a/mov>mp4/mkv\[dq] will remux aac to m4a, mov to mp4 and
@@ -993,15 +1002,15 @@ Supported values of \[dq]WHEN\[dq] are the same as that of
 --use-postprocessor (default: pre_process)
 .TP
 --xattrs
-Write metadata to the video file\[aq]s xattrs (using dublin core and xdg
+Write metadata to the video file\[aq]s xattrs (using Dublin Core and XDG
 standards)
 .TP
 --concat-playlist \f[I]POLICY\f[R]
 Concatenate videos in a playlist.
 One of \[dq]never\[dq], \[dq]always\[dq], or \[dq]multi_video\[dq]
 (default; only when the videos form a single show).
-All the video files must have same codecs and number of streams to be
-concatable.
+All the video files must have the same codecs and number of streams to
+be concatenable.
 The \[dq]pl_video:\[dq] prefix can be used with \[dq]--paths\[dq] and
 \[dq]--output\[dq] to set the output filename for the concatenated
 files.
@@ -1010,8 +1019,8 @@ See \[dq]OUTPUT TEMPLATE\[dq] for details
 --fixup \f[I]POLICY\f[R]
 Automatically correct known faults of the file.
 One of never (do nothing), warn (only emit a warning), detect_or_warn
-(the default; fix file if we can, warn otherwise), force (try fixing
-even if file already exists)
+(the default; fix the file if we can, warn otherwise), force (try fixing
+even if the file already exists)
 .TP
 --ffmpeg-location \f[I]PATH\f[R]
 Location of the ffmpeg binary; either the path to the binary or its
@@ -1022,7 +1031,7 @@ Execute a command, optionally prefixed with when to execute it,
 separated by a \[dq]:\[dq].
 Supported values of \[dq]WHEN\[dq] are the same as that of
 --use-postprocessor (default: after_move).
-Same syntax as the output template can be used to pass any field as
+The same syntax as the output template can be used to pass any field as
 arguments to the command.
 If no fields are passed, %(filepath,_filename|)q is appended to the end
 of the command.
@@ -1071,7 +1080,7 @@ Do not force keyframes around the chapters when cutting/splitting
 (default)
 .TP
 --use-postprocessor \f[I]NAME[:ARGS]\f[R]
-The (case sensitive) name of plugin postprocessors to be enabled, and
+The (case-sensitive) name of plugin postprocessors to be enabled, and
 (optionally) arguments to be passed to it, separated by a colon
 \[dq]:\[dq].
 ARGS are a semicolon \[dq];\[dq] delimited list of NAME=VALUE.
@@ -1081,8 +1090,8 @@ It can be one of \[dq]pre_process\[dq] (after video extraction),
 \[dq]after_filter\[dq] (after video passes filter), \[dq]video\[dq]
 (after --format; before --print/--output), \[dq]before_dl\[dq] (before
 each video download), \[dq]post_process\[dq] (after each video download;
-default), \[dq]after_move\[dq] (after moving video file to its final
-locations), \[dq]after_video\[dq] (after downloading and processing all
+default), \[dq]after_move\[dq] (after moving the video file to its final
+location), \[dq]after_video\[dq] (after downloading and processing all
 formats of a video), or \[dq]playlist\[dq] (at end of playlist).
 This option can be used multiple times to add different postprocessors
 .SS SponsorBlock Options:
@@ -1097,7 +1106,7 @@ Available categories are sponsor, intro, outro, selfpromo, preview,
 filler, interaction, music_offtopic, poi_highlight, chapter, all and
 default (=all).
 You can prefix the category with a \[dq]-\[dq] to exclude it.
-See [1] for description of the categories.
+See [1] for descriptions of the categories.
 E.g.
 --sponsorblock-mark all,-preview [1]
 https://wiki.sponsor.ajay.app/w/Segment_Categories
@@ -1141,8 +1150,8 @@ Split HLS playlists to different formats at discontinuities such as ad
 breaks
 .TP
 --no-hls-split-discontinuity
-Do not split HLS playlists to different formats at discontinuities such
-as ad breaks (default)
+Do not split HLS playlists into different formats at discontinuities
+such as ad breaks (default)
 .TP
 --extractor-args \f[I]IE_KEY:ARGS\f[R]
 Pass ARGS arguments to the IE_KEY extractor.
@@ -1151,7 +1160,7 @@ You can use this option multiple times to give arguments for different
 extractors
 .SH CONFIGURATION
 .PP
-You can configure yt-dlp by placing any supported command line option to
+You can configure yt-dlp by placing any supported command line option in
 a configuration file.
 The configuration is loaded from the following locations:
 .IP "1." 3
@@ -1238,9 +1247,9 @@ audio, not copy the mtime, use a proxy and save all videos under
 \f[R]
 .fi
 .PP
-\f[B]Note\f[R]: Options in configuration file are just the same options
-aka switches used in regular command line calls; thus there \f[B]must be
-no whitespace\f[R] after \f[C]-\f[R] or \f[C]--\f[R], e.g.
+\f[B]Note\f[R]: Options in a configuration file are just the same
+options aka switches used in regular command line calls; thus there
+\f[B]must be no whitespace\f[R] after \f[C]-\f[R] or \f[C]--\f[R], e.g.
 \f[C]-o\f[R] or \f[C]--proxy\f[R] but not \f[C]- o\f[R] or
 \f[C]-- proxy\f[R].
 They must also be quoted when necessary, as if it were a UNIX shell.
@@ -1325,7 +1334,7 @@ To use an encrypted \f[C].netrc\f[R] file stored as
 .IP
 .nf
 \f[C]
-yt-dlp --netrc-cmd \[aq]gpg --decrypt \[ti]/.authinfo.gpg\[aq] https://www.youtube.com/watch?v=BaW_jenozKc
+yt-dlp --netrc-cmd \[aq]gpg --decrypt \[ti]/.authinfo.gpg\[aq] \[aq]https://www.youtube.com/watch?v=BaW_jenozKc\[aq]
 \f[R]
 .fi
 .SS Notes about environment variables
@@ -1335,7 +1344,7 @@ Environment variables are normally specified as
 \f[C]%VARIABLE%\f[R] on Windows; but is always shown as
 \f[C]${VARIABLE}\f[R] in this documentation
 .IP \[bu] 2
-yt-dlp also allow using UNIX-style variables on Windows for path-like
+yt-dlp also allows using UNIX-style variables on Windows for path-like
 options; e.g.
 \f[C]--output\f[R], \f[C]--config-location\f[R]
 .IP \[bu] 2
@@ -1560,7 +1569,7 @@ video
 .IP \[bu] 2
 \f[C]repost_count\f[R] (numeric): Number of reposts of the video
 .IP \[bu] 2
-\f[C]average_rating\f[R] (numeric): Average rating give by users, the
+\f[C]average_rating\f[R] (numeric): Average rating given by users, the
 scale used depends on the webpage
 .IP \[bu] 2
 \f[C]comment_count\f[R] (numeric): Number of comments on the video (For
@@ -1644,6 +1653,8 @@ uploaded the playlist
 \f[C]playlist_channel_id\f[R] (string): Identifier of the channel that
 uploaded the playlist
 .IP \[bu] 2
+\f[C]playlist_webpage_url\f[R] (string): URL of the playlist webpage
+.IP \[bu] 2
 \f[C]webpage_url\f[R] (string): A URL to the video webpage which, if
 given to yt-dlp, should yield the same result again
 .IP \[bu] 2
@@ -1651,8 +1662,8 @@ given to yt-dlp, should yield the same result again
 .IP \[bu] 2
 \f[C]webpage_url_domain\f[R] (string): The domain of the webpage URL
 .IP \[bu] 2
-\f[C]original_url\f[R] (string): The URL given by the user (or same as
-\f[C]webpage_url\f[R] for playlist entries)
+\f[C]original_url\f[R] (string): The URL given by the user (or the same
+as \f[C]webpage_url\f[R] for playlist entries)
 .IP \[bu] 2
 \f[C]categories\f[R] (list): List of categories the video belongs to
 .IP \[bu] 2
@@ -1803,7 +1814,7 @@ Such sequences will be replaced with placeholder value provided with
 \f[B]Tip\f[R]: Look at the \f[C]-j\f[R] output to identify which fields
 are available for the particular URL
 .PP
-For numeric sequences you can use numeric related
+For numeric sequences, you can use numeric related
 formatting (https://docs.python.org/3/library/stdtypes.html#printf-style-string-formatting);
 e.g.
 \f[C]%(view_count)05d\f[R] will result in a string with view count
@@ -1858,7 +1869,7 @@ $ yt-dlp -P \[dq]C:/MyVideos\[dq] -o \[dq]%(series)s/%(season_number)s - %(seaso
 
 # Download video as \[dq]C:\[rs]MyVideos\[rs]uploader\[rs]title.ext\[dq], subtitles as \[dq]C:\[rs]MyVideos\[rs]subs\[rs]uploader\[rs]title.ext\[dq]
 # and put all temporary files in \[dq]C:\[rs]MyVideos\[rs]tmp\[dq]
-$ yt-dlp -P \[dq]C:/MyVideos\[dq] -P \[dq]temp:tmp\[dq] -P \[dq]subtitle:subs\[dq] -o \[dq]%(uploader)s/%(title)s.%(ext)s\[dq] BaW_jenoz --write-subs
+$ yt-dlp -P \[dq]C:/MyVideos\[dq] -P \[dq]temp:tmp\[dq] -P \[dq]subtitle:subs\[dq] -o \[dq]%(uploader)s/%(title)s.%(ext)s\[dq] BaW_jenozKc --write-subs
 
 # Download video as \[dq]C:\[rs]MyVideos\[rs]uploader\[rs]title.ext\[dq] and subtitles as \[dq]C:\[rs]MyVideos\[rs]uploader\[rs]subs\[rs]title.ext\[dq]
 $ yt-dlp -P \[dq]C:/MyVideos\[dq] -o \[dq]%(uploader)s/%(title)s.%(ext)s\[dq] -o \[dq]subtitle:%(uploader)s/subs/%(title)s.%(ext)s\[dq] BaW_jenozKc --write-subs
@@ -2244,18 +2255,15 @@ The fields \f[C]hasvid\f[R] and \f[C]ie_pref\f[R] are always given
 highest priority in sorting, irrespective of the user-defined order.
 This behavior can be changed by using \f[C]--format-sort-force\f[R].
 Apart from these, the default order used is:
-\f[C]lang,quality,res,fps,hdr:12,vcodec:vp9.2,channels,acodec,size,br,asr,proto,ext,hasaud,source,id\f[R].
+\f[C]lang,quality,res,fps,hdr:12,vcodec,channels,acodec,size,br,asr,proto,ext,hasaud,source,id\f[R].
 The extractors may override this default order, but they cannot override
 the user-provided order.
 .PP
-Note that the default has \f[C]vcodec:vp9.2\f[R]; i.e.
-\f[C]av1\f[R] is not preferred.
-Similarly, the default for hdr is \f[C]hdr:12\f[R]; i.e.
+Note that the default for hdr is \f[C]hdr:12\f[R]; i.e.
 Dolby Vision is not preferred.
-These choices are made since DV and AV1 formats are not yet fully
-compatible with most devices.
-This may be changed in the future as more devices become capable of
-smoothly playing back these formats.
+This choice was made since DV formats are not yet fully compatible with
+most devices.
+This may be changed in the future.
 .PP
 If your format selector is \f[C]worst\f[R], the last item is selected
 after sorting.
@@ -2339,11 +2347,11 @@ $ yt-dlp -S \[dq]res:480\[dq]
 # or the worst video (that also has audio) if there is no video under 50 MB
 $ yt-dlp -f \[dq]b[filesize<50M] / w\[dq]
 
-# Download largest video (that also has audio) but no bigger than 50 MB,
+# Download the largest video (that also has audio) but no bigger than 50 MB,
 # or the smallest video (that also has audio) if there is no video under 50 MB
 $ yt-dlp -f \[dq]b\[dq] -S \[dq]filesize:50M\[dq]
 
-# Download best video (that also has audio) that is closest in size to 50 MB
+# Download the best video (that also has audio) that is closest in size to 50 MB
 $ yt-dlp -f \[dq]b\[dq] -S \[dq]filesize\[ti]50M\[dq]
 
 
@@ -2414,7 +2422,7 @@ The option can be used multiple times to parse and modify various
 fields.
 .PP
 Note that these options preserve their relative order, allowing
-replacements to be made in parsed fields and viceversa.
+replacements to be made in parsed fields and vice versa.
 Also, any field thus created can be used in the output template and will
 also affect the media file\[aq]s metadata added when using
 \f[C]--embed-metadata\f[R].
@@ -2580,7 +2588,7 @@ Some extractors accept additional arguments which can be passed using
 \f[C]ARGS\f[R] is a \f[C];\f[R] (semicolon) separated string of
 \f[C]ARG=VAL1,VAL2\f[R].
 E.g.
-\f[C]--extractor-args \[dq]youtube:player-client=mediaconnect,web;formats=incomplete\[dq] --extractor-args \[dq]funimation:version=uncut\[dq]\f[R]
+\f[C]--extractor-args \[dq]youtube:player-client=tv,mweb;formats=incomplete\[dq] --extractor-args \[dq]funimation:version=uncut\[dq]\f[R]
 .PP
 Note: In CLI, \f[C]ARG\f[R] can use \f[C]-\f[R] instead of \f[C]_\f[R];
 e.g.
@@ -2607,17 +2615,18 @@ respectively
 \f[C]player_client\f[R]: Clients to extract video data from.
 The main clients are \f[C]web\f[R], \f[C]ios\f[R] and \f[C]android\f[R],
 with variants \f[C]_music\f[R] and \f[C]_creator\f[R] (e.g.
-\f[C]ios_creator\f[R]); and \f[C]mediaconnect\f[R], \f[C]mweb\f[R],
-\f[C]android_producer\f[R], \f[C]android_testsuite\f[R],
-\f[C]android_vr\f[R], \f[C]web_safari\f[R], \f[C]web_embedded\f[R],
-\f[C]tv\f[R] and \f[C]tv_embedded\f[R] with no variants.
-By default, \f[C]ios,mweb\f[R] is used, and \f[C]tv_embedded\f[R],
-\f[C]web_creator\f[R] and \f[C]mediaconnect\f[R] are added as required
-for age-gated videos.
-Similarly, the music variants are added for \f[C]music.youtube.com\f[R]
-urls.
-Most \f[C]android\f[R] clients will be given lowest priority since their
-formats are broken.
+\f[C]ios_creator\f[R]); and \f[C]mweb\f[R], \f[C]android_vr\f[R],
+\f[C]web_safari\f[R], \f[C]web_embedded\f[R], \f[C]tv\f[R] and
+\f[C]tv_embedded\f[R] with no variants.
+By default, \f[C]ios,mweb\f[R] is used, or \f[C]web_creator,mweb\f[R] is
+used when authenticating with cookies.
+The \f[C]_music\f[R] variants are added for \f[C]music.youtube.com\f[R]
+URLs.
+Some clients, such as \f[C]web\f[R] and \f[C]android\f[R], require a
+\f[C]po_token\f[R] for their formats to be downloadable.
+Some clients, such as the \f[C]_creator\f[R] variants, will only work
+with authentication.
+Not all clients support authentication via cookies.
 You can use \f[C]all\f[R] to use all the clients, and \f[C]default\f[R]
 for the default clients.
 You can prefix a client with \f[C]-\f[R] to exclude it, e.g.
@@ -2655,7 +2664,8 @@ maximum of 100 replies total
 \f[C]dashy\f[R] (convert HTTP to DASH), \f[C]duplicate\f[R] (identical
 content but different URLs or protocol; includes \f[C]dashy\f[R]),
 \f[C]incomplete\f[R] (cannot be downloaded completely - live dash and
-post-live m3u8)
+post-live m3u8), \f[C]missing_pot\f[R] (include formats that require a
+PO Token but are missing one)
 .IP \[bu] 2
 \f[C]innertube_host\f[R]: Innertube API host to use for all API
 requests; e.g.
@@ -2732,6 +2742,13 @@ playlist
 \f[C]live_status\f[R] - a value of \f[C]false\f[R] will set
 \f[C]not_live\f[R], any other value (or no value) will set
 \f[C]is_live\f[R]
+.IP \[bu] 2
+\f[C]impersonate\f[R]: Target(s) to try and impersonate with the initial
+webpage request; e.g.
+\f[C]generic:impersonate=safari,chrome-110\f[R].
+Use \f[C]generic:impersonate\f[R] to impersonate any available target,
+and use \f[C]generic:impersonate=false\f[R] to disable impersonation
+(default)
 .SS funimation
 .IP \[bu] 2
 \f[C]language\f[R]: Audio languages to extract, e.g.
@@ -2867,13 +2884,13 @@ URLs, e.g.
 .IP \[bu] 2
 \f[C]formats\f[R]: Formats to request from the API.
 Requested values should be in the format of
-\f[C]{protocol}_{extension}\f[R] (omitting the bitrate), e.g.
+\f[C]{protocol}_{codec}\f[R], e.g.
 \f[C]hls_opus,http_aac\f[R].
 The \f[C]*\f[R] character functions as a wildcard, e.g.
 \f[C]*_mp3\f[R], and can be passed by itself to request all formats.
 Known protocols include \f[C]http\f[R], \f[C]hls\f[R] and
-\f[C]hls-aes\f[R]; known extensions include \f[C]aac\f[R],
-\f[C]opus\f[R] and \f[C]mp3\f[R].
+\f[C]hls-aes\f[R]; known codecs include \f[C]aac\f[R], \f[C]opus\f[R]
+and \f[C]mp3\f[R].
 Original \f[C]download\f[R] formats are always extracted.
 Default is
 \f[C]http_aac,hls_aac,http_opus,hls_opus,http_mp3,hls_mp3\f[R]
@@ -2887,12 +2904,12 @@ If individual segments are desired, use
 .IP \[bu] 2
 \f[C]prefer_multi_flv\f[R]: Prefer extracting flv formats over mp4 for
 older videos that still provide legacy formats
-.SS digitalconcerthall
+.SS sonylivseries
 .IP \[bu] 2
-\f[C]prefer_combined_hls\f[R]: Prefer extracting combined/pre-merged
-video and audio HLS formats.
-This will exclude 4K/HEVC video and lossless/FLAC audio formats, which
-are only available as split video/audio HLS formats
+\f[C]sort_order\f[R]: Episode sort order for series extraction - one of
+\f[C]asc\f[R] (ascending, oldest first) or \f[C]desc\f[R] (descending,
+newest first).
+Default is \f[C]asc\f[R]
 .PP
 \f[B]Note\f[R]: These options may be changed/removed in the future
 without concern for backward compatibility
@@ -2986,7 +3003,7 @@ python3 -m pip install -U --pre \[dq]yt-dlp[default]\[dq]
 .fi
 .SS DEPENDENCIES
 .PP
-Python versions 3.8+ (CPython and PyPy) are supported.
+Python versions 3.9+ (CPython) and 3.10+ (PyPy) are supported.
 Other versions and implementations may or may not work correctly.
 .PP
 While all the other dependencies are optional, \f[C]ffmpeg\f[R] and
@@ -3168,7 +3185,7 @@ officially supported.
 This may or may not work correctly.
 .SS Platform-independent Binary (UNIX)
 .PP
-You will need the build tools \f[C]python\f[R] (3.8+), \f[C]zip\f[R],
+You will need the build tools \f[C]python\f[R] (3.9+), \f[C]zip\f[R],
 \f[C]make\f[R] (GNU), \f[C]pandoc\f[R]* and \f[C]pytest\f[R]*.
 .PP
 After installing these, simply run \f[C]make\f[R].
@@ -3176,24 +3193,6 @@ After installing these, simply run \f[C]make\f[R].
 You can also run \f[C]make yt-dlp\f[R] instead to compile only the
 binary without updating any of the additional files.
 (The build tools marked with \f[B]*\f[R] are not needed for this)
-.SS Standalone Py2Exe Builds (Windows)
-.PP
-While we provide the option to build with
-py2exe (https://www.py2exe.org), it is recommended to build using
-PyInstaller instead since the py2exe builds \f[B]cannot contain
-\f[CB]pycryptodomex\f[B]/\f[CB]certifi\f[B]/\f[CB]requests\f[B] and need
-VC++14\f[R] on the target computer to run.
-.PP
-If you wish to build it anyway, install Python (if it is not already
-installed) and you can run the following commands:
-.IP
-.nf
-\f[C]
-py devscripts/install_deps.py --include py2exe
-py devscripts/make_lazy_extractors.py
-py -m bundle.py2exe
-\f[R]
-.fi
 .SS Related scripts
 .IP \[bu] 2
 \f[B]\f[CB]devscripts/install_deps.py\f[B]\f[R] - Install dependencies
@@ -3213,8 +3212,8 @@ file.
 extractors.
 Running this before building the binaries (any variant) will improve
 their startup performance.
-Set the environment variable \f[C]YTDLP_NO_LAZY_EXTRACTORS=1\f[R] if you
-wish to forcefully disable lazy extractor loading.
+Set the environment variable \f[C]YTDLP_NO_LAZY_EXTRACTORS\f[R] to
+something nonempty to forcefully disable lazy extractor loading.
 .PP
 Note: See their \f[C]--help\f[R] for more info.
 .SS Forking the project
@@ -3256,6 +3255,8 @@ In other words, the file structure on the disk looks something like:
 yt-dlp looks for these \f[C]yt_dlp_plugins\f[R] namespace folders in
 many locations (see below) and loads in plugins from \f[B]all\f[R] of
 them.
+Set the environment variable \f[C]YTDLP_NO_PLUGINS\f[R] to something
+nonempty to disable loading plugins entirely.
 .PP
 See the wiki for some known
 plugins (https://github.com/yt-dlp/yt-dlp/wiki/Plugins)
@@ -3324,7 +3325,7 @@ Any path in \f[C]PYTHONPATH\f[R] is searched in for the
 \f[C]yt_dlp_plugins\f[R] namespace folder.
 .RS 2
 .IP \[bu] 2
-Note: This does not apply for Pyinstaller/py2exe builds.
+Note: This does not apply for Pyinstaller builds.
 .RE
 .RE
 .PP
@@ -3635,13 +3636,14 @@ Fix for n-sig based
 throttling (https://github.com/ytdl-org/youtube-dl/issues/29326)
 \f[B]*\f[R]
 .IP \[bu] 2
-Supports some (but not all) age-gated content without cookies
-.IP \[bu] 2
 Download livestreams from the start using \f[C]--live-from-start\f[R]
 (\f[I]experimental\f[R])
 .IP \[bu] 2
 Channel URLs download all uploads of the channel, including shorts and
 live
+.IP \[bu] 2
+Support for logging in with
+OAuth (https://github.com/yt-dlp/yt-dlp/wiki/Extractors#logging-in-with-oauth)
 .RE
 .IP \[bu] 2
 \f[B]Cookies from browser\f[R]: Cookies can be automatically extracted
@@ -3723,8 +3725,8 @@ Features marked with a \f[B]*\f[R] have been back-ported to youtube-dl
 Some of yt-dlp\[aq]s default options are different from that of
 youtube-dl and youtube-dlc:
 .IP \[bu] 2
-yt-dlp supports only Python 3.8+, and \f[I]may\f[R] remove support for
-more versions as they become
+yt-dlp supports only Python 3.9+, and will remove support for more
+versions as they become
 EOL (https://devguide.python.org/versions/#python-release-cycle); while
 youtube-dl still supports Python 2.6+ and
 3.2+ (https://github.com/ytdl-org/youtube-dl/issues/30568#issue-1118238743)
@@ -3749,7 +3751,11 @@ The default format sorting is different from youtube-dl and prefers
 higher resolution and better codecs rather than higher bitrates.
 You can use the \f[C]--format-sort\f[R] option to change this to any
 order you prefer, or use \f[C]--compat-options format-sort\f[R] to use
-youtube-dl\[aq]s sorting order
+youtube-dl\[aq]s sorting order.
+Older versions of yt-dlp preferred VP9 due to its broader compatibility;
+you can use \f[C]--compat-options prefer-vp9-sort\f[R] to revert to that
+format sorting preference.
+These two compat options cannot be used together
 .IP \[bu] 2
 The default format selector is \f[C]bv*+ba/b\f[R].
 This means that if a combined video + audio format that is better than
@@ -3892,10 +3898,10 @@ For ease of use, a few more compat options are available:
 this!\f[R])
 .IP \[bu] 2
 \f[C]--compat-options youtube-dl\f[R]: Same as
-\f[C]--compat-options all,-multistreams,-playlist-match-filter,-manifest-filesize-approx,-allow-unsafe-ext\f[R]
+\f[C]--compat-options all,-multistreams,-playlist-match-filter,-manifest-filesize-approx,-allow-unsafe-ext,-prefer-vp9-sort\f[R]
 .IP \[bu] 2
 \f[C]--compat-options youtube-dlc\f[R]: Same as
-\f[C]--compat-options all,-no-live-chat,-no-youtube-channel-redirect,-playlist-match-filter,-manifest-filesize-approx,-allow-unsafe-ext\f[R]
+\f[C]--compat-options all,-no-live-chat,-no-youtube-channel-redirect,-playlist-match-filter,-manifest-filesize-approx,-allow-unsafe-ext,-prefer-vp9-sort\f[R]
 .IP \[bu] 2
 \f[C]--compat-options 2021\f[R]: Same as
 \f[C]--compat-options 2022,no-certifi,filename-sanitization,no-youtube-prefer-utc-upload-date\f[R]
@@ -3903,7 +3909,8 @@ this!\f[R])
 \f[C]--compat-options 2022\f[R]: Same as
 \f[C]--compat-options 2023,playlist-match-filter,no-external-downloader-progress,prefer-legacy-http-handler,manifest-filesize-approx\f[R]
 .IP \[bu] 2
-\f[C]--compat-options 2023\f[R]: Currently does nothing.
+\f[C]--compat-options 2023\f[R]: Same as
+\f[C]--compat-options prefer-vp9-sort\f[R].
 Use this to enable all future compat options
 .PP
 The following compat options restore vulnerable behavior from before
@@ -3959,8 +3966,8 @@ due to their ease of use
 --min-views COUNT                --match-filters \[dq]view_count >=? COUNT\[dq]
 --max-views COUNT                --match-filters \[dq]view_count <=? COUNT\[dq]
 --break-on-reject                Use --break-match-filters
---user-agent UA                  --add-header \[dq]User-Agent:UA\[dq]
---referer URL                    --add-header \[dq]Referer:URL\[dq]
+--user-agent UA                  --add-headers \[dq]User-Agent:UA\[dq]
+--referer URL                    --add-headers \[dq]Referer:URL\[dq]
 --playlist-start NUMBER          -I NUMBER:
 --playlist-end NUMBER            -I :NUMBER
 --playlist-reverse               -I ::-1
