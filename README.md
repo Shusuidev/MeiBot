@@ -22,7 +22,7 @@ To get started with MeiBot, follow these simple steps:
 
 ### Prerequisites
 
-Ensure you have Python 3.8 or higher installed. You can download it from [Python's official website](https://www.python.org/downloads/).
+[Python's official website](https://www.python.org/downloads/).
 
 ### Installation
 
@@ -40,11 +40,22 @@ Ensure you have Python 3.8 or higher installed. You can download it from [Python
     ```
     YOUR_TOKEN=your_discord_bot_token_here
     ```
+3. **remember to activate venv**
 
-3. **Install the requirements**:
+    Linux/Mac:
+    ```bash
+    source tutorialvenv/bin/activate
+    ```
+
+    Windows
+    ```bash
+    .\tutorialvenv\Scripts\activate
+    ```
+
+4. **Install the requirements**:
 
     ```bash
-    pip install -r requirements/requirements.txt
+    pip install -r ./requirements/requirements.txt
     ```
 
 4. **Test it!**
@@ -86,4 +97,4 @@ Contributions are welcome! If you'd like to work on MeiBot, please follow these 
 - Make your changes.
 - Submit a pull request with a clear description of your changes.
 
-Alternatively, you can contact me via email or Discord at "kaalwy@proton.me".
+Alternatively, you can contact me via email (kaalwy@proton.me) or Discord (shusuiwy).
