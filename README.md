@@ -1,6 +1,6 @@
 # MeiBot
 
-MeiBot is a powerful Discord bot designed to enhance your Discord server's experience. It offers various features, including music playback, dice rolling, RPG character creation, moderation tools, and more. If you'd like to contribute or collaborate on this project, feel free to reach out to me on Discord with the username `shusuiwy`.
+MeiBot is a powerful Discord bot designed to enhance your Discord server's experience. It offers various features, including music playback, dice rolling, RPG character creation, moderation tools, and more. If you'd like to contribute or collaborate on this project, feel free to reach out to me on Discord with the username `shusuidev`.
 
 ## Features
 
@@ -97,4 +97,4 @@ Contributions are welcome! If you'd like to work on MeiBot, please follow these 
 - Make your changes.
 - Submit a pull request with a clear description of your changes.
 
-Alternatively, you can contact me via email (kaalwy@proton.me) or Discord (shusuiwy).
+Alternatively, you can contact me via email (kaalwy@proton.me) or Discord (shusuidev).
