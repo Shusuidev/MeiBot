@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import discord
 from discord.ext import commands
 import wavelink
+from music.music import MusicBot
 
 load_dotenv()
 TOKEN = os.getenv('MEI_TOKEN')
@@ -32,9 +33,8 @@ async def on_ready():
     except Exception as e:
         print(f'Error syncing commands: {e}')
 
-#? carrega comandos
-from music.music import setup_music_commands
-setup_music_commands(bot)
+    # Carrega o cog MusicBot
+    await bot.add_cog(MusicBot(bot))
 
 from commands.dice import setup_dice_commands
 setup_dice_commands(bot)
