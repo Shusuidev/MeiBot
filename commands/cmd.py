@@ -5,7 +5,11 @@ import json
 import os
 from datetime import datetime
 
+intents = discord.Intents.default()
+intents.members = True
+
 CONFIG_FILE = "greet_config.json"
+AUTOROLE_CONFIG_FILE = "autorole_config.json"
 
 def load_greet_channel():
     if os.path.exists(CONFIG_FILE):
@@ -24,9 +28,6 @@ gifs = [
     "https://i.pinimg.com/originals/f5/f2/74/f5f27448c036af645c27467c789ad759.gif",
     "https://i.pinimg.com/originals/2f/43/76/2f437614d7fa7239696a8b34d5e41769.gif"
 ]
-
-intents = discord.Intents.default()
-intents.members = True
 
 bot = commands.Bot(command_prefix=".", intents=intents)
 
@@ -79,6 +80,53 @@ def setup_general_commands(bot):
     @bot.tree.command(name="ajuda", description="Mostra todos os comandos disponíveis.")
     async def ajuda_slash(interaction: discord.Interaction):
         await send_help_message(interaction)
+
+    def load_autorole():
+        if os.path.exists(AUTOROLE_CONFIG_FILE):
+            with open(AUTOROLE_CONFIG_FILE, "r") as file:
+                return json.load(file).get("autorole")
+        return None
+
+    def save_autorole(role_id):
+        with open(AUTOROLE_CONFIG_FILE, "w") as file:
+            json.dump({"autorole": role_id}, file)
+
+    @bot.command(name="autorole")
+    @commands.has_permissions(administrator=True)
+    async def autorole(ctx, role: discord.Role):
+        save_autorole(role.id)
+        
+        embed = discord.Embed(
+            title="✅ Cargo Automático Definido",
+            description=f"Novo membros receberão automaticamente o cargo {role.mention}.",
+            color=discord.Color.green()
+        )
+        await ctx.send(embed=embed)
+
+    @bot.event
+    async def on_member_join(member):
+        # Canal de boas-vindas
+        greet_channel_id = load_greet_channel()
+        if greet_channel_id:
+            channel = bot.get_channel(greet_channel_id)
+            if channel:
+                selected_gif = random.choice(gifs)
+                embed = discord.Embed(
+                    title="Bem-vindo!",
+                    description=f"Olá {member.mention}, seja bem-vindo ao servidor!",
+                    color=discord.Color.green()
+                )
+                embed.set_image(url=selected_gif)
+                await channel.send(embed=embed)
+
+        autorole_id = load_autorole()
+        if autorole_id:
+            role = member.guild.get_role(autorole_id)
+            if role:
+                try:
+                    await member.add_roles(role)
+                except discord.Forbidden:
+                    print(f"Permissões insuficientes para adicionar o cargo {role.name}.")
 
     @bot.event
     async def on_message(message):
