@@ -97,4 +97,4 @@ Contributions are welcome! If you'd like to work on MeiBot, please follow these 
 - Make your changes.
 - Submit a pull request with a clear description of your changes.
 
-Alternatively, you can contact me via email (kaalwy@proton.me) or Discord (shusuidev).
+Alternatively, you can contact me via email (kaalwy@proton.me) or Discord (shusui_cat_lover).
